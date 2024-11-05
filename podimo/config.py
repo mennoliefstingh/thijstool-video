@@ -115,3 +115,10 @@ if os.path.exists(BLOCK_LIST_FILE):
             if line and not line.startswith('#'): 
                 line = line.split(' ', 1)[0]
                 BLOCKED.add(line)
+
+
+# load experimental video support env vars
+VIDEO_ENABLED = bool(
+    str(config.get("ENABLE_VIDEO", None)).lower() in ["true", "1", "t", "y", "yes"]
+)
+VIDEO_TITLE_SUFFIX = str(config.get("VIDEO_TITLE_SUFFIX", ""))
