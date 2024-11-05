@@ -300,13 +300,20 @@ async def addFeedEntry(fg, episode, session, locale):
     fe = fg.add_entry()
     fe.guid(episode["id"])
     fe.title(episode["title"])
-    fe.description(episode["description"])
-    fe.pubDate(episode.get("publishDatetime", episode.get("datetime")))
-    fe.podcast.itunes_image(episode["imageUrl"])
 
     url, duration = extract_audio_url(episode)
     if url is None:
-        return 
+        return
+
+    # Generate the video url and paste it as prefix in the description :')
+    ep_id = url.split("/")[-1].replace(".mp3", "")
+    hls_url = f"https://cdn.podimo.com/hls-media/{ep_id}/stream_video_high/stream.m3u8"
+    description = f"Video URL: {hls_url} (ymmv)             {episode['description']}"
+    fe.description(description)
+
+    fe.pubDate(episode.get("publishDatetime", episode.get("datetime")))
+    fe.podcast.itunes_image(episode["imageUrl"])
+
     logging.debug(f"Found podcast '{episode['title']}'")
     fe.podcast.itunes_duration(duration)
     content_length, content_type = await urlHeadInfo(session, episode['id'], url, locale)
