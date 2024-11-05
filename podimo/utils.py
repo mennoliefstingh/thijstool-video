@@ -70,7 +70,7 @@ def async_wrap(func):
         return await loop.run_in_executor(executor, pfunc)
     return run
 
-def video_exists_at(url: str) -> bool:
+def video_exists_at_url(url: str) -> bool:
     res = requests.get(url)
     if res.text.strip().startswith("#EXTM3U"):
         return True
