@@ -308,9 +308,17 @@ async def addFeedEntry(fg, episode, session, locale):
     ep_id = url.split("/")[-1].replace(".mp3", "")
     hls_url = f"https://cdn.podimo.com/hls-media/{ep_id}/stream_video_high/stream.m3u8"
 
-    if VIDEO_ENABLED and video_exists_at_url(hls_url):
-        fe.description(f"Video URL found at: {hls_url} (experimental) || {episode['description']}")
-        fe.title(episode["title"] + VIDEO_TITLE_SUFFIX)
+    if VIDEO_ENABLED:
+        if VIDEO_CHECK_ENABLED:
+            if video_exists_at_url(hls_url):
+                fe.description(
+                    f"Video URL found at: {hls_url} (experimental) || {episode['description']}"
+                )
+                fe.title(episode["title"] + VIDEO_TITLE_SUFFIX)
+            else:
+                fe.description(f"Video URL: {hls_url} (not verified) || {episode['description']}")
+                fe.title(episode["title"])
+
     else:
         fe.description(episode["description"])
         fe.title(episode["title"])
